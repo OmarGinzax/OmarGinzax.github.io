@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Omar Ginza — Game Developer, Unity Programmer &amp; Project Manager</title>
+  <meta name="description"
+    content="Portfolio of Omar Ginza: Game Developer, C# and Unity Programmer, and Project Manager behind Altalis, Fiz Catcher, Dust March, The Rule Are Yours, CrabFish Torpedo, and Heart String.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0B110F;
+      --surface: #111A16;
+      --surface-hover: #16221D;
+      --line: #21302A;
+      --line-light: #31473E;
+      --text: #EDF2EF;
+      --muted: #8FA39A;
+      --accent: #68D3A3;
+      --accent-warm: #84E2B8;
+      --display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+      --serif: "Newsreader", Georgia, serif;
+      --body: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font: 400 1.05rem/1.65 var(--body);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Subtle tactile film grain overlay for a bespoke editorial feel */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.028;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .wrap {
+      width: min(1180px, 100% - 3.5rem);
+      margin-inline: auto;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: var(--display);
+      line-height: 0.94;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+    }
+
+    em.editorial {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 400;
+      text-transform: none;
+      letter-spacing: 0;
+      color: var(--accent);
+    }
+
+    /* Top Navigation */
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 30;
+      background: rgba(11, 17, 15, 0.88);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 4rem;
+    }
+
+    .brand {
+      font-family: var(--display);
+      font-size: 1.45rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text);
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+    }
+
+    .brand span {
+      font-family: var(--body);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      text-transform: none;
+      color: var(--muted);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.2rem;
+      list-style: none;
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .nav-links a {
+      transition: color 0.2s;
+      padding: 0.25rem 0;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 0;
+      height: 1.5px;
+      background: var(--accent);
+      transition: width 0.25s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      min-height: 94svh;
+      display: flex;
+      align-items: flex-end;
+      padding: 8.5rem 0 4.5rem;
+      border-bottom: 1px solid var(--line);
+      background:
+        radial-gradient(65% 75% at 88% 15%, rgba(104, 211, 163, 0.11), transparent 65%),
+        radial-gradient(50% 60% at 8% 92%, rgba(36, 94, 74, 0.14), transparent 65%),
+        var(--bg);
+    }
+
+    .hero-top {
+      margin-bottom: 2.75rem;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .hero-eyebrow::before {
+      content: "";
+      width: 2rem;
+      height: 1.5px;
+      background: var(--accent);
+      display: inline-block;
+    }
+
+    .hero h1 {
+      font-size: clamp(4.2rem, 12.5vw, 9.5rem);
+      font-weight: 900;
+      letter-spacing: -0.01em;
+      line-height: 0.88;
+    }
+
+    .hero-bottom {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 3rem 5rem;
+      align-items: end;
+      padding-top: 2.5rem;
+      border-top: 1px solid var(--line);
+    }
+
+    .hero p.lead {
+      font-size: clamp(1.12rem, 1.5vw, 1.28rem);
+      line-height: 1.6;
+      color: #C9D6D0;
+      max-width: 54ch;
+    }
+
+    .hero p.lead strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .cta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.9rem;
+      margin-top: 2.2rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.8rem 1.5rem;
+      border: 1px solid var(--line-light);
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: 0.01em;
+      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .btn:hover {
+      border-color: var(--text);
+      background: var(--surface);
+      transform: translateY(-1px);
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #07120D;
+      font-weight: 700;
+    }
+
+    .btn.primary:hover {
+      background: var(--accent-warm);
+      border-color: var(--accent-warm);
+    }
+
+    /* Editorial Role Columns in Hero */
+    .disciplines {
+      display: grid;
+      grid-template-columns: 1fr;
+      border-top: 1px solid var(--line);
+    }
+
+    .discipline-row {
+      display: grid;
+      grid-template-columns: 170px 1fr;
+      gap: 1.25rem;
+      padding: 1.05rem 0;
+      border-bottom: 1px solid var(--line);
+      align-items: baseline;
+    }
+
+    .discipline-name {
+      font-family: var(--display);
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      color: var(--text);
+    }
+
+    .discipline-detail {
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* Section Layout */
+    section {
+      padding: 6.5rem 0 0;
+      scroll-margin-top: 4rem;
+    }
+
+    #projects {
+      min-height: 100svh;
+      padding: 4.9rem 0 1.4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      scroll-margin-top: 0;
+    }
+
+    #projects .wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .sec-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      padding-bottom: 1.25rem;
+      margin-bottom: 2.25rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    #projects .sec-header {
+      padding-bottom: 0.75rem;
+      margin-bottom: 0;
+      align-items: center;
+    }
+
+    #projects h2 {
+      font-size: clamp(1.9rem, 3.4vw, 2.75rem);
+    }
+
+    .sec-kicker {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    h2 {
+      font-size: clamp(2.5rem, 5.5vw, 4rem);
+      font-weight: 900;
+    }
+
+    /* View Switcher + Slider Controls */
+    .projects-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 0.15rem;
+    }
+
+    .project-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+
+    .project-pill {
+      font-family: var(--body);
+      font-size: 0.84rem;
+      font-weight: 600;
+      padding: 0.42rem 0.9rem;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .project-pill:hover {
+      color: var(--text);
+      border-color: var(--line-light);
+    }
+
+    .project-pill[aria-current="true"] {
+      background: var(--text);
+      border-color: var(--text);
+      color: var(--bg);
+    }
+
+    .slider-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .slide-counter {
+      font-family: var(--display);
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+    }
+
+    .arrows {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .arrows button {
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--line-light);
+      background: transparent;
+      color: var(--text);
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .arrows button:hover:not(:disabled) {
+      background: var(--text);
+      border-color: var(--text);
+      color: var(--bg);
+    }
+
+    .arrows button:disabled {
+      opacity: 0.25;
+      cursor: default;
+    }
+
+    /* Carousel & Project Showcase Cards */
+    .slider {
+      display: flex;
+      gap: 2rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .slider::-webkit-scrollbar {
+      display: none;
+    }
+
+    .slide {
+      flex: 0 0 100%;
+      min-width: 0;
+      scroll-snap-align: center;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: 1.18fr 1fr;
+      align-items: stretch;
+      overflow: hidden;
+    }
+
+    /* Left Column of Card: 16:9 Artwork + Quick Specs Bar */
+    .slide-visual {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 1px solid var(--line);
+      background: #070C0A;
+    }
+
+    .frame {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      width: 100%;
+      overflow: hidden;
+      background: #070C0A;
+    }
+
+    .frame img.cover-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .slide:hover .frame img.cover-img {
+      transform: scale(1.025);
+    }
+
+    .visual-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--line);
+      background: rgba(11, 17, 15, 0.9);
+      margin-top: auto;
+    }
+
+    .visual-stat {
+      padding: 0.85rem 1.1rem;
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .visual-stat:last-child {
+      border-right: none;
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 0.15rem;
+    }
+
+    .stat-value {
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+
+    /* Right Column of Card: Editorial Story & Engineering Breakdown */
+    .slide-content {
+      padding: 1.5rem 1.85rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .project-header {
+      margin-bottom: 0.65rem;
+    }
+
+    .project-role-tag {
+      display: inline-block;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.25rem;
+    }
+
+    .slide h3 {
+      font-size: clamp(1.85rem, 2.8vw, 2.45rem);
+      font-weight: 900;
+      letter-spacing: 0.01em;
+    }
+
+    .summary {
+      font-size: 0.94rem;
+      color: #C7D4CE;
+      margin-bottom: 0.85rem;
+      line-height: 1.52;
+    }
+
+    .contributions {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 1rem;
+      border-top: 1px solid var(--line);
+    }
+
+    .contributions li {
+      padding: 0.52rem 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 0.87rem;
+      line-height: 1.45;
+      color: #BAC8C1;
+    }
+
+    .contributions li strong {
+      color: var(--text);
+      font-weight: 600;
+      display: inline;
+      margin-right: 0.35rem;
+    }
+
+    .contributions li strong::after {
+      content: "—";
+      margin-left: 0.35rem;
+      color: var(--accent);
+      font-weight: 400;
+    }
+
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      padding-top: 0.25rem;
+    }
+
+    .slide-footer .btn {
+      padding: 0.6rem 1.15rem;
+      font-size: 0.88rem;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      list-style: none;
+    }
+
+    .tag-row li {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--muted);
+      padding: 0.2rem 0.6rem;
+      background: var(--bg);
+      border: 1px solid var(--line);
+    }
+
+    /* Experience Section */
+    .timeline {
+      list-style: none;
+      padding: 0;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 1.5rem 4rem;
+      padding: 2.75rem 0;
+      border-bottom: 1px solid var(--line);
+      transition: background 0.2s;
+    }
+
+    .timeline-item:first-child {
+      padding-top: 0.5rem;
+    }
+
+    .timeline-meta .when {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
+    .timeline-meta .org {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 2rem;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .timeline-meta .loc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 0.35rem;
+    }
+
+    .timeline-content h3 {
+      font-family: var(--body);
+      font-size: 1.3rem;
+      font-weight: 700;
+      text-transform: none;
+      letter-spacing: 0;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+
+    .timeline-content ul {
+      list-style: none;
+      padding: 0;
+      max-width: 72ch;
+    }
+
+    .timeline-content li {
+      position: relative;
+      padding-left: 1.25rem;
+      margin-bottom: 0.6rem;
+      color: #C2D0C9;
+    }
+
+    .timeline-content li::before {
+      content: "—";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+
+    /* Capabilities & Education Split */
+    .split {
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 4.5rem;
+    }
+
+    dl.spec-dl div {
+      display: grid;
+      grid-template-columns: 185px 1fr;
+      gap: 1.25rem;
+      padding: 1.2rem 0;
+      border-bottom: 1px solid var(--line);
+      align-items: baseline;
+    }
+
+    dl.spec-dl div:first-child {
+      padding-top: 0;
+    }
+
+    dt {
+      font-family: var(--display);
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      color: var(--text);
+    }
+
+    dd {
+      color: #C2D0C9;
+      font-size: 0.98rem;
+      line-height: 1.6;
+    }
+
+    .edu-card {
+      padding: 1.6rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .edu-card:first-child {
+      padding-top: 0;
+    }
+
+    .edu-period {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
+    .edu-degree {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 1.75rem;
+      letter-spacing: 0.02em;
+      color: var(--text);
+    }
+
+    .edu-school {
+      display: block;
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-top: 0.3rem;
+    }
+
+    /* Contact Section */
+    .contact {
+      padding-bottom: 7rem;
+    }
+
+    .contact-banner {
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 4.5rem 0;
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 3rem;
+      align-items: end;
+    }
+
+    .contact h2 {
+      font-size: clamp(3rem, 7.5vw, 5.8rem);
+      line-height: 0.92;
+      margin-bottom: 1.2rem;
+    }
+
+    .contact .mail {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: clamp(1.6rem, 3.8vw, 2.75rem);
+      color: var(--accent);
+      letter-spacing: 0.02em;
+      border-bottom: 2px solid transparent;
+      transition: border-color 0.2s;
+    }
+
+    .contact .mail:hover {
+      border-color: var(--accent);
+    }
+
+    .contact-meta {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-top: 1rem;
+    }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+    }
+
+    footer {
+      padding: 2rem 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    @media (max-width: 1020px) {
+      #projects {
+        min-height: auto;
+        padding: 5.5rem 0 2rem;
+      }
+
+      .slide {
+        grid-template-columns: 1fr;
+        flex-basis: 100%;
+      }
+
+      .slide-visual {
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+      }
+    }
+
+    @media (max-width: 840px) {
+      .hero {
+        min-height: auto;
+        padding: 7.5rem 0 4rem;
+      }
+
+      .hero-bottom,
+      .timeline-item,
+      .split,
+      .contact-banner {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-bottom {
+        gap: 2.5rem;
+      }
+
+      section {
+        padding-top: 5rem;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .wrap {
+        width: calc(100% - 2rem);
+      }
+
+      .topbar-inner .nav-links {
+        display: none;
+      }
+
+      .discipline-row,
+      dl.spec-dl div {
+        grid-template-columns: 1fr;
+        gap: 0.3rem;
+      }
+
+      .visual-bar {
+        grid-template-columns: 1fr;
+      }
+
+      .visual-stat {
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+        padding: 0.75rem 1.1rem;
+      }
+
+      .slide-content {
+        padding: 1.5rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      .frame img.cover-img {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="topbar" aria-label="Primary">
+    <div class="wrap topbar-inner">
+      <a href="#top" class="brand">Omar Ginza <span>Surabaya, ID</span></a>
+      <ul class="nav-links">
+        <li><a href="#projects">Works</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#skills">Capabilities</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="Resume_Omar%20Ginza.pdf" target="_blank" rel="noopener">Resume</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header class="hero" id="top">
+    <div class="wrap">
+      <div class="hero-top">
+        <div class="hero-eyebrow">Game Developer · Unity Programmer · Project Manager</div>
+        <h1>Omar Ginza</h1>
+      </div>
+
+      <div class="hero-bottom">
+        <div>
+          <p class="lead">I build games where <strong>systems design, modular C# architecture, and team
+              production</strong> lock together. At Fiz Studio, I lead multidisciplinary teams and write the underlying
+            Unity code—from Metroidvania world progression and roguelike persistence to hybrid FSM &amp; Machine
+            Learning game AI.</p>
+          <div class="cta">
+            <a class="btn primary" href="#projects">Selected Works</a>
+            <a class="btn" href="Resume_Omar%20Ginza.pdf" target="_blank" rel="noopener">Resume</a>
+          </div>
+        </div>
+
+        <div class="disciplines" aria-label="Core disciplines">
+          <div class="discipline-row">
+            <span class="discipline-name">Programming</span>
+            <span class="discipline-detail">Unity &amp; C# gameplay architecture, AI Finite State Machines, Machine
+              Learning agents, and persistent data systems.</span>
+          </div>
+          <div class="discipline-row">
+            <span class="discipline-name">Production</span>
+            <span class="discipline-detail">Leading 5 to 6 person teams across art, code, and writing from early
+              prototype to public Steam and itch.io releases.</span>
+          </div>
+          <div class="discipline-row">
+            <span class="discipline-name">Game Design</span>
+            <span class="discipline-detail">Systemic puzzle mechanics, roguelike tactical progression, and multi-route
+              branching narrative structures.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="projects">
+      <div class="wrap">
+        <div class="sec-header">
+          <div>
+            <span class="sec-kicker">Selected Works (2024 – 2026)</span>
+            <h2>Shipped Games &amp; <em class="editorial">Playable Demos</em></h2>
+          </div>
+        </div>
+
+        <div class="projects-toolbar">
+          <div class="project-nav" role="tablist" aria-label="Select project">
+            <button type="button" class="project-pill" data-index="0" aria-current="true">Altalis</button>
+            <button type="button" class="project-pill" data-index="1">Fiz Catcher</button>
+            <button type="button" class="project-pill" data-index="2">Dust March</button>
+            <button type="button" class="project-pill" data-index="3">The Rule Are Yours</button>
+            <button type="button" class="project-pill" data-index="4">CrabFish Torpedo</button>
+            <button type="button" class="project-pill" data-index="5">Heart String</button>
+            <a class="project-pill more-link" href="https://ginzax.itch.io/" target="_blank" rel="noopener">More on itch.io &rarr;</a>
+          </div>
+
+          <div class="slider-controls">
+            <span class="slide-counter" id="slide-counter" aria-live="polite">1 of 6</span>
+            <div class="arrows">
+              <button type="button" id="prev" aria-label="Previous project">&larr;</button>
+              <button type="button" id="next" aria-label="Next project">&rarr;</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="slider" id="slider" tabindex="0" role="region" aria-label="Projects showcase">
+
+          <!-- 1: ALTALIS -->
+          <article class="slide" data-slide="0">
+            <div class="slide-visual">
+              <div class="frame">
+                <img class="cover-img" src="Altalis.jpg" alt="Altalis cover artwork">
+              </div>
+              <div class="visual-bar">
+                <div class="visual-stat">
+                  <span class="stat-label">Studio &amp; Scale</span>
+                  <span class="stat-value">Fiz Studio (6 Members)</span>
+                </div>
+                <div class="visual-stat">
+                  <span class="stat-label">Genre</span>
+                  <span class="stat-value">2D Metroidvania Puzzle</span>
+                </div>
+                <div class="visual-stat">
+                  <span class="stat-label">Release</span>
+                  <span class="stat-value">Steam Public Demo</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="slide-content">
+              <div>
+                <div class="project-header">
+                  <span class="project-role-tag">Project Manager &amp; Unity Programmer</span>
+                  <h3>Altalis</h3>
+                </div>
+                <p class="summary">A puzzle Metroidvania built around systemic world exploration. I directed a
+                  six-person team through full-cycle production and programmed the core gameplay systems to ship our
+                  public Steam demo on schedule.</p>
+                <ul class="contributions">
+                  <li>
+                    <strong>C# Object-Manipulation Systems</strong>
+                    Engineered core interactive puzzle entities and player manipulation mechanics in Unity.
+                  </li>
+                  <li>
+                    <strong>Metroidvania Progression Framework</strong>
+                    Designed a modular C# architecture handling ability gating and interconnected world mapping.
+                  </li>
+                  <li>
+                    <strong>Cross-Discipline Production</strong>
+                    Planned milestones, ran sprint reviews, and coordinated integration across art, design, and code.
+                  </li>
+                </ul>
+              </div>
+
+              <div class="slide-footer">
+                <ul class="tag-row">
+                  <li>Unity</li>
+                  <li>C#</li>
+                  <li>Project Management</li>
+                  <li>Systems Design</li>
+                </ul>
+                <a class="btn primary" href="https://store.steampowered.com/app/4373270/Altalis/" target="_blank"
+                  rel="noopener">Play on Steam &rarr;</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- 2: FIZ CATCHER -->
+          <article class="slide" data-slide="1">
+            <div class="slide-visual">
+              <div class="frame">
+                <img class="cover-img" src="Fiz Catcher.png" alt="Fiz Catcher cover artwork">
+              </div>
+              <div class="visual-bar">
+                <div class="visual-stat">
+                  <span class="stat-label">Studio &amp; Event</span>
+                  <span class="stat-value">Fiz Studio · Gimersia 2026</span>
+                </div>
+                <div class="visual-stat">
+                  <span class="stat-label">Genre</span>
+                  <span class="stat-value">Asymmetric Reverse Pac-Man</span>
+                </div>
+                <div class="visual-stat">
+                  <span class="stat-label">Core Tech</span>
+                  <span class="stat-value">AI FSM &amp; Machine Learning</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="slide-content">
+              <div>
+                <div class="project-header">
+                  <span class="project-role-tag">Project Manager &amp; AI Programmer</span>
+                  <h3>Fiz Catcher</h3>
+                </div>
+                <p class="summary">An asymmetric arcade game where a squad of animal hunters tracks down an elusive
+                  target ("Fiz") armed with decoys, invisibility, and teleports. I managed the Fiz Studio team and built
+                  the hybrid AI driving Fiz.</p>
+                <ul class="contributions">
+                  <li>
+                    <strong>Hybrid FSM &amp; Machine Learning AI</strong>
+                    Combined Finite State Machines with Machine Learning decision models so Fiz dynamically adapts to
+                    hunter encirclement and pathing threats.
+                  </li>
+                  <li>
+                    <strong>Tactical Escape Logic</strong>
+                    Programmed threat evaluation triggers governing when the AI deploys speed boosts, decoys,
+                    invisibility, or teleportation.
+                  </li>
+                  <li>
+                    <strong>Team Coordination</strong>
+                    Scoped milestones and oversaw multi-developer branch integration for Gimersia Inspire 2026.
+                  </li>
+                </ul>
+              </div>
+
+              <div class="slide-footer">
+                <ul class="tag-row">
+                  <li>Unity</li>
+                  <li>C#</li>
+                  <li>Machine Learning</li>
+                  <li>AI FSM</li>
+                  <li>Project Management</li>
+                </ul>
+                <a class="btn primary" href="https://fiz-studio.itch.io/fiz-catcher" target="_blank" rel="noopener">View
+                  on itch.io &rarr;</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- 3: DUST MARCH -->
+          <article class="slide" data-slide="2">
+            <div class="slide-visual">
+              <div class="frame">
+                <img class="cover-img" src="Dust March.png" alt="Dust March cover artwork">
+              </div>
+              <div class="visual-bar">
+                <div class="visual-stat">
+                  <span class="stat-label">Discipline</span>
+                  <span class="stat-value">Design, Code &amp; PM</span>
+                </div>
+                <div class="visual-stat">
+                  <span class="stat-label">Genre</span>
+                  <span class="stat-value">2D Roguelike RTS</span>
+                </div>
+                <div class="visual-stat">
+                  <span class="stat-label">Core Tech</span>
+                  <span class="stat-value">Persistent Data Manager</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="slide-content">
+              <div>
+                <div class="project-header">
+                  <span class="project-role-tag">Game Designer, Project Manager &amp; Programmer</span>
+                  <h3>Dust March</h3>
+                </div>
+                <p class="summary">A 2D real-time strategy game built around endless tactical roguelike runs. I led
+                  project milestones as PM, designed the tactical progression loop, and programmed the roguelike and
+                  persistence systems.</p>
+                <ul class="contributions">
+                  <li>
+                    <strong>Persistent Manager Architecture</strong>
+                    Engineered the cross-scene persistence manager handling run state, unlocks, and data continuity
+                    between battles.
+                  </li>
+                  <li>
+                    <strong>Roguelike Mechanics Programming</strong>
+                    Implemented randomized upgrade drafts, scaling encounter modifiers, and run-cycle resets in C#.
+                  </li>
+                  <li>
+                    <strong>Systems Balance &amp; PM</strong>
+                    Balanced unit progression curves and kept engineering milestones aligned with design scope.
+                  </li>
+                </ul>
+              </div>
+
+              <div class="slide-footer">
+                <ul class="tag-row">
+                  <li>Unity</li>
+                  <li>C#</li>
+                  <li>Persistent Manager</li>
+                  <li>Roguelike Systems</li>
+                  <li>Game Design</li>
+                </ul>
+                <a class="btn primary" href="https://astreda.itch.io/dust-march" target="_blank" rel="noopener">View on
+                  itch.io &rarr;</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- 4: THE RULE ARE YOURS -->
+          <article class="slide" data-slide="3">
+            <div class="slide-visual">
+              <div class="frame">
+                <img class="cover-img" src="The Rule Are Yours.png" alt="The Rule Are Yours cover artwork">
+              </div>
+              <div class="visual-bar">
+                <div class="visual-stat">
+                  <span class="stat-label">Event</span>
+                  <span class="stat-value">GameJam+ 26/27 Indonesia</span>
+                </div>
+                <div class="visual-stat">
+                  <span class="stat-label">Genre</span>
+                  <span class="stat-value">Rule-Bending Platformer</span>
+                </div>
+                <div class="visual-stat">
+                  <span class="stat-label">Platform</span>
+                  <span class="stat-value">Web (HTML5) &amp; Windows</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="slide-content">
+              <div>
+                <div class="project-header">
+                  <span class="project-role-tag">Sole Programmer &amp; Game Designer</span>
+                  <h3>The Rule Are Yours</h3>
+                </div>
+                <p class="summary">Built for GameJam+ 26/27 under the theme <em>"Rules are made to be broken,"</em> this
+                  puzzle platformer lets players toggle level laws on and off in real time. As sole programmer, I wrote
+                  the entire codebase and co-designed the stages.</p>
+                <ul class="contributions">
+                  <li>
+                    <strong>Sole Unity &amp; C# Codebase</strong>
+                    Architected 100% of the gameplay systems, character physics controller, rule-toggle UI, and WebGL/PC
+                    builds.
+                  </li>
+                  <li>
+                    <strong>Real-Time Rule-Toggle Engine</strong>
+                    Built a modular world-state controller allowing players to invert gravity, disable spike hazards,
+                    and alter collision laws on the fly.
+                  </li>
+                  <li>
+                    <strong>Multi-Solution Level Design</strong>
+                    Designed puzzle stages around creative combinations of active and inactive physical rules.
+                  </li>
+                </ul>
+              </div>
+
+              <div class="slide-footer">
+                <ul class="tag-row">
+                  <li>Sole Programmer</li>
+                  <li>Unity</li>
+                  <li>C#</li>
+                  <li>Puzzle Design</li>
+                  <li>WebGL</li>
+                </ul>
+                <a class="btn primary" href="https://firuls.itch.io/loopho" target="_blank" rel="noopener">Play in
+                  Browser &rarr;</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- 5: CRABFISH TORPEDO -->
+          <article class="slide" data-slide="4">
+            <div class="slide-visual">
+              <div class="frame">
+                <img class="cover-img" src="CrabFish Torpedo.png" alt="CrabFish Torpedo cover artwork">
+              </div>
+              <div class="visual-bar">
+                <div class="visual-stat">
+                  <span class="stat-label">Studio</span>
+                  <span class="stat-value">Fiz Studio</span>
+                </div>
+                <div class="visual-stat">
+                  <span class="stat-label">Genre</span>
+                  <span class="stat-value">Ocean Action Simulation</span>
+                </div>
+                <div class="visual-stat">
+                  <span class="stat-label">Platform</span>
+                  <span class="stat-value">Windows (itch.io)</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="slide-content">
+              <div>
+                <div class="project-header">
+                  <span class="project-role-tag">Project Manager &amp; Programmer</span>
+                  <h3>CrabFish Torpedo</h3>
+                </div>
+                <p class="summary">Developed at Fiz Studio, this fast-paced underwater simulation and arcade title puts
+                  a small crab in the open ocean armed with a live torpedo. I managed team delivery while programming
+                  the core movement and torpedo systems.</p>
+                <ul class="contributions">
+                  <li>
+                    <strong>Underwater Locomotion &amp; Physics</strong>
+                    Programmed swimming propulsion, torpedo steering, and impact collision mechanics in Unity and C#.
+                  </li>
+                  <li>
+                    <strong>Fiz Studio Production</strong>
+                    Directed task scheduling, asset integration, and build QA to ship a polished release on itch.io.
+                  </li>
+                </ul>
+              </div>
+
+              <div class="slide-footer">
+                <ul class="tag-row">
+                  <li>Unity</li>
+                  <li>C#</li>
+                  <li>Project Management</li>
+                  <li>Fiz Studio</li>
+                </ul>
+                <a class="btn primary" href="https://ginzax.itch.io/crabfish-torpedo" target="_blank"
+                  rel="noopener">View on itch.io &rarr;</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- 6: HEART STRING -->
+          <article class="slide" data-slide="5">
+            <div class="slide-visual">
+              <div class="frame">
+                <img class="cover-img" src="HeartString.png" alt="Heart String cover artwork">
+              </div>
+              <div class="visual-bar">
+                <div class="visual-stat">
+                  <span class="stat-label">Studio &amp; Team</span>
+                  <span class="stat-value">Janaka VN (5 Writers)</span>
+                </div>
+                <div class="visual-stat">
+                  <span class="stat-label">Genre</span>
+                  <span class="stat-value">2D Campus Dating Sim</span>
+                </div>
+                <div class="visual-stat">
+                  <span class="stat-label">Scope</span>
+                  <span class="stat-value">4 Routes · 14 Endings</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="slide-content">
+              <div>
+                <div class="project-header">
+                  <span class="project-role-tag">Lead Scriptwriter</span>
+                  <h3>Heart String</h3>
+                </div>
+                <p class="summary">A commercial 2D visual novel published on itch.io. I directed a five-person writing
+                  team, designing the branching state architecture and editorial QA pipeline so every route stayed
+                  consistent prior to engine integration.</p>
+                <ul class="contributions">
+                  <li>
+                    <strong>Branching Narrative Architecture</strong>
+                    Structured 4 character routes, 14 branching paths, and 14 unique endings with strict flag
+                    continuity.
+                  </li>
+                  <li>
+                    <strong>Writing Team Direction &amp; QA</strong>
+                    Led 5 writers, establishing tone guidelines and reviewing all narrative assets before engine
+                    implementation.
+                  </li>
+                </ul>
+              </div>
+
+              <div class="slide-footer">
+                <ul class="tag-row">
+                  <li>Narrative Design</li>
+                  <li>Branching Systems</li>
+                  <li>Team Lead</li>
+                  <li>Editorial QA</li>
+                </ul>
+                <a class="btn primary" href="https://astreda.itch.io/heartstring" target="_blank" rel="noopener">View on
+                  itch.io &rarr;</a>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <section id="experience">
+      <div class="wrap">
+        <div class="sec-header">
+          <div>
+            <span class="sec-kicker">Career Track</span>
+            <h2>Production &amp; <em class="editorial">Leadership</em></h2>
+          </div>
+        </div>
+
+        <ol class="timeline">
+          <li class="timeline-item">
+            <div class="timeline-meta">
+              <span class="when">2025 – Present</span>
+              <div class="org">Fiz Studio</div>
+              <div class="loc">Surabaya, Indonesia</div>
+            </div>
+            <div class="timeline-content">
+              <h3>Project Manager &amp; Unity Programmer</h3>
+              <ul>
+                <li>Managed a 6-member multidisciplinary team through full-cycle development of <em>Altalis</em> (public
+                  Steam demo), <em>Fiz Catcher</em> (Gimersia Inspire 2026), and <em>CrabFish Torpedo</em>.</li>
+                <li>Engineered core object-manipulation systems, a modular Metroidvania progression framework (ability
+                  gating, world mapping), and hybrid FSM + Machine Learning game AI in Unity and C#.</li>
+                <li>Coordinated milestone tracking, sprint reviews, and asset integration pipelines across programming,
+                  art, and level design.</li>
+              </ul>
+            </div>
+          </li>
+
+          <li class="timeline-item">
+            <div class="timeline-meta">
+              <span class="when">2024 – 2025</span>
+              <div class="org">Janaka VN</div>
+              <div class="loc">Indie Visual Novel Studio</div>
+            </div>
+            <div class="timeline-content">
+              <h3>Lead Scriptwriter</h3>
+              <ul>
+                <li>Spearheaded a 5-person writing team for <em>Heart String</em>, a commercial 2D dating sim visual
+                  novel released on itch.io.</li>
+                <li>Architected narrative flow across 4 character routes, 14 branching paths, and 14 unique endings to
+                  maintain storyline continuity.</li>
+                <li>Established quality assurance and editorial workflows, evaluating all narrative assets prior to
+                  engine integration.</li>
+              </ul>
+            </div>
+          </li>
+
+          <li class="timeline-item">
+            <div class="timeline-meta">
+              <span class="when">2022 – 2023</span>
+              <div class="org">TOKI Extracurricular</div>
+              <div class="loc">Design &amp; Animation Club</div>
+            </div>
+            <div class="timeline-content">
+              <h3>Head of Extracurricular</h3>
+              <ul>
+                <li>Directed club operations and structured multidisciplinary project teams to compete in national
+                  design and animation competitions.</li>
+                <li>Designed and delivered structured training modules in fundamental drawing and 2D animation
+                  techniques for active members.</li>
+              </ul>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="skills">
+      <div class="wrap split">
+        <div>
+          <div class="sec-header">
+            <div>
+              <span class="sec-kicker">Toolkit &amp; Craft</span>
+              <h2>Capabilities</h2>
+            </div>
+          </div>
+          <dl class="spec-dl">
+            <div>
+              <dt>Programming</dt>
+              <dd>Unity Engine (2D/3D, WebGL, PC), C#, AI Finite State Machines (FSM), Machine Learning Game Agents,
+                Persistent Data Managers</dd>
+            </div>
+            <div>
+              <dt>Game Design</dt>
+              <dd>Systems &amp; Mechanics Design, Roguelike Progression Loops, Metroidvania World Mapping, Level Design,
+                GDDs, Branching Narrative</dd>
+            </div>
+            <div>
+              <dt>Project Mgmt</dt>
+              <dd>Milestone Planning, Scope Management, Cross-Functional Team Coordination (Code, Art, Writing),
+                Editorial &amp; Build QA</dd>
+            </div>
+            <div>
+              <dt>Tools</dt>
+              <dd>Git &amp; GitHub, Notion, Figma, Steamworks Pipeline, itch.io Deployment</dd>
+            </div>
+            <div>
+              <dt>Languages</dt>
+              <dd>Indonesian (Native), English (Professional Working Proficiency)</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div>
+          <div class="sec-header">
+            <div>
+              <span class="sec-kicker">Academic Background</span>
+              <h2>Education</h2>
+            </div>
+          </div>
+          <div>
+            <div class="edu-card">
+              <span class="edu-period">2024 – Present</span>
+              <div class="edu-degree">D4 Game Technology</div>
+              <span class="edu-school">Politeknik Elektronika Negeri Surabaya (PENS)</span>
+            </div>
+            <div class="edu-card">
+              <span class="edu-period">2020 – 2024</span>
+              <div class="edu-degree">Mathematics &amp; Natural Sciences (MIPA)</div>
+              <span class="edu-school">SMAN 6 Surabaya · Graduated 2024</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="wrap">
+        <div class="contact-banner">
+          <div>
+            <span class="sec-kicker">Get in Touch</span>
+            <h2>Let's Ship <em class="editorial">Something.</em></h2>
+            <a class="mail" href="mailto:omar.ginza@gmail.com">omar.ginza@gmail.com</a>
+            <p class="contact-meta">Surabaya, Indonesia · (+62) 856-4834-3488</p>
+          </div>
+          <div class="links">
+            <a class="btn primary" href="mailto:omar.ginza@gmail.com">Send Email</a>
+            <a class="btn" href="https://github.com/OmarGinzax" target="_blank" rel="noopener">GitHub</a>
+            <a class="btn" href="https://ginzax.itch.io/" target="_blank" rel="noopener">itch.io</a>
+            <a class="btn" href="https://www.linkedin.com/in/omar-ginza-a677643a3/" target="_blank"
+              rel="noopener">LinkedIn</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <span>&copy; <span id="year"></span> Omar Ginza</span>
+      <span>Surabaya, Indonesia</span>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    var slider = document.getElementById("slider");
+    var slides = Array.prototype.slice.call(slider.querySelectorAll(".slide"));
+    var pills = Array.prototype.slice.call(document.querySelectorAll(".project-pill"));
+    var counter = document.getElementById("slide-counter");
+    var prev = document.getElementById("prev");
+    var next = document.getElementById("next");
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function getActiveIndex() {
+      if (!slides.length) return 0;
+      var scrollLeft = slider.scrollLeft;
+      var bestIndex = 0;
+      var bestDist = Infinity;
+      slides.forEach(function (slide, idx) {
+        var dist = Math.abs(slide.offsetLeft - slider.offsetLeft - scrollLeft);
+        if (dist < bestDist) {
+          bestDist = dist;
+          bestIndex = idx;
+        }
+      });
+      return bestIndex;
+    }
+
+    function scrollToSlide(index) {
+      var target = slides[Math.max(0, Math.min(slides.length - 1, index))];
+      if (!target) return;
+      var left = target.offsetLeft - slider.offsetLeft;
+      slider.scrollTo({ left: left, behavior: reduce ? "auto" : "smooth" });
+    }
+
+    function updateUI() {
+      var idx = getActiveIndex();
+      prev.disabled = idx === 0 && slider.scrollLeft < 12;
+      next.disabled = idx === slides.length - 1 || (slider.scrollLeft + slider.clientWidth >= slider.scrollWidth - 12);
+      if (counter) {
+        counter.textContent = (idx + 1) + " of " + slides.length;
+      }
+      pills.forEach(function (pill, pIdx) {
+        if (pIdx === idx) {
+          pill.setAttribute("aria-current", "true");
+        } else {
+          pill.removeAttribute("aria-current");
+        }
+      });
+    }
+
+    prev.addEventListener("click", function () {
+      scrollToSlide(getActiveIndex() - 1);
+    });
+
+    next.addEventListener("click", function () {
+      scrollToSlide(getActiveIndex() + 1);
+    });
+
+    pills.forEach(function (pill) {
+      pill.addEventListener("click", function () {
+        var idx = parseInt(pill.getAttribute("data-index"), 10);
+        scrollToSlide(idx);
+      });
+    });
+
+    slider.addEventListener("scroll", updateUI, { passive: true });
+    window.addEventListener("resize", updateUI);
+    updateUI();
+  </script>
+</body>
+
+</html>
