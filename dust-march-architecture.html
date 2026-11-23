@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dust March — Roguelike &amp; Persistence Architecture | Omar Ginza</title>
+<meta name="description" content="Technical breakdown of Dust March by Omar Ginza: Two-Tier Cross-Scene Persistence, Overland DAG Campaign Graph, Procedural Unit Drafting, Fatigue &amp; Combat Trauma Engine, and RTS Combat AI.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0B110F;
+  --surface: #111A16;
+  --surface-alt: #0E1613;
+  --line: #21302A;
+  --line-light: #31473E;
+  --text: #EDF2EF;
+  --muted: #8FA39A;
+  --accent: #68D3A3;
+  --accent-warm: #84E2B8;
+  --display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --serif: "Newsreader", Georgia, serif;
+  --body: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font: 400 1.02rem/1.65 var(--body);
+  -webkit-font-smoothing: antialiased;
+  padding: 2rem 1.25rem 5rem;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.toolbar {
+  max-width: 980px;
+  margin: 0 auto 1.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.65rem 1.25rem;
+  border: 1px solid var(--line-light);
+  background: var(--surface);
+  color: var(--text);
+  font: 600 0.88rem/1 var(--body);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  border-color: var(--text);
+}
+
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #07120D;
+  font-weight: 700;
+}
+
+.btn.primary:hover {
+  background: var(--accent-warm);
+  border-color: var(--accent-warm);
+}
+
+.doc-sheet {
+  max-width: 980px;
+  margin: 0 auto;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 3.5rem 3.75rem;
+}
+
+.doc-header {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.doc-kicker {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 0.45rem;
+}
+
+h1 {
+  font-family: var(--display);
+  font-size: clamp(2.8rem, 6vw, 4.4rem);
+  font-weight: 900;
+  line-height: 0.92;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  margin-bottom: 1.15rem;
+}
+
+.doc-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.75rem;
+  font-size: 0.88rem;
+  color: var(--muted);
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--line);
+}
+
+.doc-meta strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.doc-lead {
+  font-size: 1.1rem;
+  color: #D0DDD7;
+  line-height: 1.65;
+  margin-bottom: 2.5rem;
+}
+
+.sec {
+  margin-bottom: 3.25rem;
+  padding-bottom: 2.75rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.sec:last-of-type {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.sec-num {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+h2 {
+  font-family: var(--display);
+  font-size: clamp(1.85rem, 3.5vw, 2.5rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.015em;
+  line-height: 0.98;
+  margin-bottom: 0.85rem;
+}
+
+.sec-intro {
+  color: #C4D2CC;
+  margin-bottom: 1.5rem;
+}
+
+/* Visual Pipeline / Flowchart Cards */
+.flow-box {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 1.35rem 1.5rem;
+  margin: 1.35rem 0 1.65rem;
+}
+
+.flow-title {
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 0.95rem;
+  display: block;
+}
+
+.flow-track {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.flow-step {
+  background: var(--surface);
+  border: 1px solid var(--line-light);
+  padding: 0.55rem 0.85rem;
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.flow-step code {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  color: var(--accent);
+  margin-bottom: 0.15rem;
+}
+
+.flow-arrow {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  padding: 0 0.15rem;
+}
+
+/* Script Breakdown List */
+.script-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.1rem;
+}
+
+.script-card {
+  background: var(--surface-alt);
+  border: 1px solid var(--line);
+  padding: 1.25rem 1.35rem;
+}
+
+.script-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.script-title {
+  font-weight: 700;
+  color: var(--text);
+  font-size: 0.98rem;
+}
+
+.script-file {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+  background: rgba(104, 211, 163, 0.08);
+  border: 1px solid rgba(104, 211, 163, 0.25);
+  padding: 0.12rem 0.48rem;
+}
+
+.script-desc {
+  font-size: 0.9rem;
+  color: #BAC8C1;
+  line-height: 1.55;
+}
+
+/* Tables */
+.table-wrap {
+  overflow-x: auto;
+  margin: 1.25rem 0 1.5rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  background: var(--bg);
+  border: 1px solid var(--line);
+}
+
+th, td {
+  text-align: left;
+  padding: 0.85rem 1.1rem;
+  border-bottom: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+}
+
+th {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  background: var(--surface-alt);
+}
+
+td strong {
+  color: var(--text);
+}
+
+td code {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--accent);
+}
+
+@media (max-width: 740px) {
+  .doc-sheet {
+    padding: 2rem 1.4rem;
+  }
+  .script-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  :root {
+    --bg: #FFFFFF;
+    --surface: #FFFFFF;
+    --surface-alt: #F7F9F8;
+    --line: #D2DBD6;
+    --line-light: #B0BEB7;
+    --text: #101613;
+    --muted: #4A5952;
+    --accent: #146B48;
+  }
+  body {
+    padding: 0;
+    background: #FFFFFF;
+    color: #101613;
+    font-size: 9.5pt;
+  }
+  .toolbar {
+    display: none;
+  }
+  .doc-sheet {
+    border: none;
+    padding: 0;
+    max-width: 100%;
+  }
+  .doc-lead, .sec-intro, .script-desc {
+    color: #212B26;
+  }
+  .sec {
+    page-break-inside: avoid;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <a class="btn" href="index.html">&larr; Back to Portfolio</a>
+  <div class="toolbar-actions">
+    <a class="btn" href="https://astreda.itch.io/dust-march" target="_blank" rel="noopener">View on itch.io &nearr;</a>
+    <button type="button" class="btn primary" onclick="window.print()">Print / Save as PDF</button>
+  </div>
+</div>
+
+<main class="doc-sheet">
+  <header class="doc-header">
+    <span class="doc-kicker">Technical Architecture &amp; Systems Documentation</span>
+    <h1>Dust March — Roguelike &amp; Persistence</h1>
+    <div class="doc-meta">
+      <span><strong>Author:</strong> Omar Ginza (Game Designer, PM &amp; Programmer)</span>
+      <span><strong>Genre:</strong> 2D Roguelike Real-Time Strategy</span>
+      <span><strong>Engine:</strong> Unity 2D URP / C#</span>
+      <span><strong>Platform:</strong> Windows (itch.io)</span>
+    </div>
+  </header>
+
+  <p class="doc-lead">
+    <strong>Dust March</strong> combines a node-based roguelike overland campaign with real-time tactical squad battles. Because Unity unloads scene objects between the strategic map (<code>MapScene</code>) and combat arenas (<code>Easy/Medium/Hard/FinalBattle</code>), I designed a <strong>two-tier persistence bridge</strong> paired with a <strong>fatigue, combat trauma, and permadeath loop</strong> that forces players to rotate and draft squads strategically.
+  </p>
+
+  <!-- SECTION 1 -->
+  <section class="sec">
+    <span class="sec-num">System 01 · Cross-Scene Persistence Architecture</span>
+    <h2>Two-Tier Data Bridge &amp; Transactional Map Rollback</h2>
+    <p class="sec-intro">
+      To avoid tightly coupling the strategic overland scene to the tactical combat scenes, persistence is split into <strong>long-term JSON disk storage</strong> and a <strong>transient static memory bus</strong> (<code>SquadTransferData</code>) that ferries live squad states across scene loads.
+    </p>
+
+    <div class="flow-box" aria-label="Transactional battle persistence loop">
+      <span class="flow-title">Execution Pipeline · Cross-Scene Battle Transaction</span>
+      <div class="flow-track">
+        <div class="flow-step"><code>MapManager.cs</code>Writes mapstate_backup.json</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-step"><code>SquadTransferData.cs</code>Pipes activeSquad to Battle Scene</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-step"><code>GameOverManager.cs</code>Records deaths, trauma &amp; EXP</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-step"><code>BattleSquadStatusPanel.cs</code>Scrubs casualties &amp; commits JSON</div>
+      </div>
+    </div>
+
+    <div class="script-grid">
+      <div class="script-card">
+        <div class="script-head">
+          <span class="script-title">JSON Disk Serialization</span>
+          <span class="script-file">SaveManager.cs</span>
+        </div>
+        <p class="script-desc">Wraps top-level unit and node lists for <code>JsonUtility</code> serialization into <code>inventory.json</code>, <code>mapstate.json</code>, and <code>squad.json</code> inside <code>Application.persistentDataPath</code>.</p>
+      </div>
+
+      <div class="script-card">
+        <div class="script-head">
+          <span class="script-title">Transactional Defeat Rollback</span>
+          <span class="script-file">mapstate_backup.json</span>
+        </div>
+        <p class="script-desc">Before loading a battle scene, <code>ConfirmTravel()</code> snapshots the map graph. If the player loses the battle, the map rolls back to the pre-mission node—while keeping all unit injuries and permadeaths permanent.</p>
+      </div>
+
+      <div class="script-card">
+        <div class="script-head">
+          <span class="script-title">Transient Inter-Scene Bus</span>
+          <span class="script-file">SquadTransferData.cs</span>
+        </div>
+        <p class="script-desc">Lightweight static C# data pipe holding <code>activeSquad</code>, <code>removedCharacters</code>, <code>playerWon</code>, and <code>pendingGoldReward</code> across scene transitions without heavyweight scene dependencies.</p>
+      </div>
+
+      <div class="script-card">
+        <div class="script-head">
+          <span class="script-title">Persistent Roster Singleton</span>
+          <span class="script-file">InventoryManager.cs</span>
+        </div>
+        <p class="script-desc"><code>DontDestroyOnLoad</code> manager that reconciles <code>removedCharacters</code> after battle, tracks healthy vs. wounded unit counts, and triggers campaign Game Over if zero deployable units remain.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2 -->
+  <section class="sec">
+    <span class="sec-num">System 02 · Roguelike Roster Attrition</span>
+    <h2>Fatigue, Combat Trauma &amp; Permadeath Loop</h2>
+    <p class="sec-intro">
+      In many strategy games, players can steamroll the campaign with a single over-leveled squad. To prevent this, I designed an <strong>Availability &amp; Combat Trauma Engine</strong> that penalizes reckless wins and forces roster rotation.
+    </p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Unit Condition After Battle</th>
+            <th>Availability Penalty</th>
+            <th>Recovery Requirement</th>
+            <th>Engine Behavior</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Deployed (Overland Jump)</strong></td>
+            <td><code>-1 Availability</code></td>
+            <td>1 jump benched in reserve (<code>+1</code>/hop)</td>
+            <td>Units dropping to <code>&le; 0</code> are automatically evicted from active squad slots.</td>
+          </tr>
+          <tr>
+            <td><strong>50% – 75% HP Remaining</strong></td>
+            <td><code>availability = -1</code> (Moderate Trauma)</td>
+            <td>2 overland jumps in reserve</td>
+            <td>Applied post-battle by <code>UnitStats.ApplyAvailabilityPenalty()</code>.</td>
+          </tr>
+          <tr>
+            <td><strong>25% – 50% HP Remaining</strong></td>
+            <td><code>availability = -2</code> (Severe Trauma)</td>
+            <td>3 overland jumps in reserve</td>
+            <td>Unit is locked out of deployment until availability returns to <code>&ge; 1</code>.</td>
+          </tr>
+          <tr>
+            <td><strong>&le; 25% HP Remaining</strong></td>
+            <td><code>availability = -3</code> (Critical Trauma)</td>
+            <td>4 overland jumps in reserve</td>
+            <td>Forces player to recruit or field backup squads from the procedural market.</td>
+          </tr>
+          <tr>
+            <td><strong>0 HP (Killed in Action)</strong></td>
+            <td><strong>Permadeath</strong> (<code>isDead = true</code>)</td>
+            <td>Permanent removal</td>
+            <td>Displayed in red on <code>BattleSquadStatusPanel</code>, then scrubbed from <code>inventory.json</code>.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECTION 3 -->
+  <section class="sec">
+    <span class="sec-num">System 03 · Procedural Campaign &amp; Unit Drafting</span>
+    <h2>DAG Map Progression &amp; Genetic Recruit Generation</h2>
+    <p class="sec-intro">
+      Every overland jump advances the player along a Directed Acyclic Graph (DAG) of mission nodes while refreshing a procedural mercenary market with randomized archetypes, genetic traits, and modular paper-doll sprites.
+    </p>
+
+    <div class="script-grid">
+      <div class="script-card">
+        <div class="script-head">
+          <span class="script-title">Forward-Pruning DAG Map</span>
+          <span class="script-file">MapManager.cs &amp; AreaNode.cs</span>
+        </div>
+        <p class="script-desc">Locks previously visited nodes (<code>LockAllAreasExcept</code>) and unlocks only forward adjacent edges. Procedural nodes scale enemy wave density (<code>1–2</code> on Easy up to <code>8</code> on Final) and gold payouts (<code>100g–1000g</code>).</p>
+      </div>
+
+      <div class="script-card">
+        <div class="script-head">
+          <span class="script-title">Procedural Unit &amp; Trait Drafting</span>
+          <span class="script-file">ShopManager.cs</span>
+        </div>
+        <p class="script-desc">Generates 4 recruits per jump across 4 classes (<em>Marksman</em>, <em>Rifleman</em>, <em>Frontliner</em>, <em>Rusher</em>) and rolls trait mutations: <strong>Strong</strong> (+20% ATK), <strong>Valiant</strong> (+15% HP), <strong>Eagle Eyed</strong> (+10% Range), or <strong>Positive</strong> (10% faster fire rate).</p>
+      </div>
+
+      <div class="script-card">
+        <div class="script-head">
+          <span class="script-title">Modular Paper-Doll Assembly</span>
+          <span class="script-file">CharacterBuilder.cs</span>
+        </div>
+        <p class="script-desc">Decouples unit data from visuals by binding rolled cosmetic indices (hair, head, body, arms, legs, weapon) to Unity 2D Animation <code>SpriteResolver</code> categories at runtime.</p>
+      </div>
+
+      <div class="script-card">
+        <div class="script-head">
+          <span class="script-title">Exponential Level-Up Curve &amp; NG+ Loop</span>
+          <span class="script-file">GameOverManager.cs</span>
+        </div>
+        <p class="script-desc">Awards 200 EXP on win (50 EXP on loss), granting <code>+1 ATK</code> and <code>+3 HP</code> per level while doubling next-level EXP requirements. Clearing the Final node triggers a New Game+ map reset while preserving your veteran roster.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4 -->
+  <section class="sec">
+    <span class="sec-num">System 04 · Real-Time Tactical Combat</span>
+    <h2>Dynamic Grid Formations &amp; Line-of-Sight AI</h2>
+    <p class="sec-intro">
+      Inside combat scenes, players command squads using mouse marquee boxes or touch gestures against escalating enemy waves powered by A* pathfinding.
+    </p>
+
+    <div class="script-grid">
+      <div class="script-card">
+        <div class="script-head">
+          <span class="script-title">Centered Formation Math &amp; Anti-Crowding</span>
+          <span class="script-file">GameController.cs</span>
+        </div>
+        <p class="script-desc">When ordering <em>N</em> selected units to a target point, computes a centered <code>&lceil;&radic;N&rceil;</code> grid formation with <code>0.5m</code> spacing and <code>[-0.2, 0.2]</code> positional jitter so units never deadlock on the same A* pathfinding node.</p>
+      </div>
+
+      <div class="script-card">
+        <div class="script-head">
+          <span class="script-title">Aggressive vs. Passive Line-of-Sight AI</span>
+          <span class="script-file">UnitController.cs &amp; UnitShooting.cs</span>
+        </div>
+        <p class="script-desc">In <code>Passive</code> mode, units hold ground and fire in range. In <code>Aggressive</code> mode, units cast 2D raycasts toward targets and automatically command their <code>AIPath</code> component to flank around obstacles blocking line of sight.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>

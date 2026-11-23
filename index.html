@@ -1148,22 +1148,24 @@
                   <span class="project-role-tag">Game Designer, Project Manager &amp; Programmer</span>
                   <h3>Dust March</h3>
                 </div>
-                <p class="summary">A 2D real-time strategy game built around endless tactical roguelike runs. I led
-                  project milestones as PM, designed the tactical progression loop, and programmed the roguelike and
-                  persistence systems.</p>
+                <p class="summary">A 2D real-time strategy game built around node-based roguelike runs. I led project
+                  milestones as PM, designed the tactical attrition loop, and programmed the cross-scene persistence
+                  bridge, procedural unit drafting, and combat trauma systems.</p>
                 <ul class="contributions">
                   <li>
-                    <strong>Persistent Manager Architecture</strong>
-                    Engineered the cross-scene persistence manager handling run state, unlocks, and data continuity
-                    between battles.
+                    <strong>Two-Tier Persistence &amp; Map Rollback</strong>
+                    Bridged overland and battle scenes via a static memory bus and JSON disk snapshots that roll back
+                    map nodes on defeat while keeping unit injuries and permadeaths permanent.
                   </li>
                   <li>
-                    <strong>Roguelike Mechanics Programming</strong>
-                    Implemented randomized upgrade drafts, scaling encounter modifiers, and run-cycle resets in C#.
+                    <strong>Fatigue, Combat Trauma &amp; Procedural Drafting</strong>
+                    Coded post-battle HP trauma penalties (-1 to -3 availability), permadeath scrubbing, and a 4-class
+                    mercenary market with genetic stat traits and modular 2D paper-doll sprites.
                   </li>
                   <li>
-                    <strong>Systems Balance &amp; PM</strong>
-                    Balanced unit progression curves and kept engineering milestones aligned with design scope.
+                    <strong>DAG Campaign Graph &amp; PM Execution</strong>
+                    Built forward-pruning node traversal with scaling wave rewards and balanced unit progression across
+                    the engineering schedule.
                   </li>
                 </ul>
               </div>
@@ -1176,8 +1178,11 @@
                   <li>Roguelike Systems</li>
                   <li>Game Design</li>
                 </ul>
-                <a class="btn primary" href="https://astreda.itch.io/dust-march" target="_blank" rel="noopener">View on
-                  itch.io &rarr;</a>
+                <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                  <a class="btn" href="dust-march-architecture.html" target="_blank" rel="noopener">Technical Docs &nearr;</a>
+                  <a class="btn primary" href="https://astreda.itch.io/dust-march" target="_blank" rel="noopener">View on
+                    itch.io &rarr;</a>
+                </div>
               </div>
             </div>
           </article>
