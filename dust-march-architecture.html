@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dust March — Roguelike &amp; Persistence Architecture | Omar Ginza</title>
-<meta name="description" content="Technical breakdown of Dust March by Omar Ginza: Two-Tier Cross-Scene Persistence, Overland DAG Campaign Graph, Procedural Unit Drafting, Fatigue &amp; Combat Trauma Engine, and RTS Combat AI.">
+<title>Dust March — Systems Deep Dive | Omar Ginza</title>
+<meta name="description" content="Technical breakdown of Dust March by Omar Ginza: Two-Tier Cross-Scene Persistence, Overland DAG Campaign Graph, Procedural Unit Drafting, and Fatigue &amp; Combat Trauma Engine.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
@@ -368,7 +368,7 @@ td code {
 <main class="doc-sheet">
   <header class="doc-header">
     <span class="doc-kicker">Technical Architecture &amp; Systems Documentation</span>
-    <h1>Dust March — Roguelike &amp; Persistence</h1>
+    <h1>Dust March — Systems Deep Dive</h1>
     <div class="doc-meta">
       <span><strong>Author:</strong> Omar Ginza (Game Designer, PM &amp; Programmer)</span>
       <span><strong>Genre:</strong> 2D Roguelike Real-Time Strategy</span>
@@ -530,33 +530,6 @@ td code {
           <span class="script-file">GameOverManager.cs</span>
         </div>
         <p class="script-desc">Awards 200 EXP on win (50 EXP on loss), granting <code>+1 ATK</code> and <code>+3 HP</code> per level while doubling next-level EXP requirements. Clearing the Final node triggers a New Game+ map reset while preserving your veteran roster.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 4 -->
-  <section class="sec">
-    <span class="sec-num">System 04 · Real-Time Tactical Combat</span>
-    <h2>Dynamic Grid Formations &amp; Line-of-Sight AI</h2>
-    <p class="sec-intro">
-      Inside combat scenes, players command squads using mouse marquee boxes or touch gestures against escalating enemy waves powered by A* pathfinding.
-    </p>
-
-    <div class="script-grid">
-      <div class="script-card">
-        <div class="script-head">
-          <span class="script-title">Centered Formation Math &amp; Anti-Crowding</span>
-          <span class="script-file">GameController.cs</span>
-        </div>
-        <p class="script-desc">When ordering <em>N</em> selected units to a target point, computes a centered <code>&lceil;&radic;N&rceil;</code> grid formation with <code>0.5m</code> spacing and <code>[-0.2, 0.2]</code> positional jitter so units never deadlock on the same A* pathfinding node.</p>
-      </div>
-
-      <div class="script-card">
-        <div class="script-head">
-          <span class="script-title">Aggressive vs. Passive Line-of-Sight AI</span>
-          <span class="script-file">UnitController.cs &amp; UnitShooting.cs</span>
-        </div>
-        <p class="script-desc">In <code>Passive</code> mode, units hold ground and fire in range. In <code>Aggressive</code> mode, units cast 2D raycasts toward targets and automatically command their <code>AIPath</code> component to flank around obstacles blocking line of sight.</p>
       </div>
     </div>
   </section>
