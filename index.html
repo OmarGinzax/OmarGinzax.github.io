@@ -623,6 +623,94 @@
       border: 1px solid var(--line);
     }
 
+    /* Technical Case Study Section (Altalis Deep Dive) */
+    .case-study-intro {
+      max-width: 68ch;
+      color: #C7D4CE;
+      font-size: 1.05rem;
+      line-height: 1.65;
+      margin-bottom: 2.5rem;
+    }
+
+    .arch-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      border-top: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+    }
+
+    .arch-card {
+      padding: 2.25rem 2.2rem;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1.25rem;
+    }
+
+    .arch-kicker {
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 0.45rem;
+    }
+
+    .arch-card h3 {
+      font-size: 1.9rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.015em;
+    }
+
+    .arch-card p {
+      color: #C2D0C9;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 0.85rem;
+    }
+
+    .arch-points {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .arch-points li {
+      padding: 0.55rem 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 0.88rem;
+      color: #BAC8C1;
+      line-height: 1.5;
+    }
+
+    .arch-points li strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .code-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      list-style: none;
+      padding-top: 0.25rem;
+    }
+
+    .code-pills li {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.74rem;
+      color: var(--accent);
+      background: rgba(104, 211, 163, 0.07);
+      border: 1px solid rgba(104, 211, 163, 0.25);
+      padding: 0.18rem 0.55rem;
+    }
+
     /* Experience Section */
     .timeline {
       list-style: none;
@@ -847,6 +935,7 @@
       }
 
       .hero-bottom,
+      .arch-grid,
       .timeline-item,
       .split,
       .contact-banner {
@@ -911,6 +1000,7 @@
       <a href="#top" class="brand">Omar Ginza <span>Surabaya, ID</span></a>
       <ul class="nav-links">
         <li><a href="#projects">Works</a></li>
+        <li><a href="#architecture">Architecture</a></li>
         <li><a href="#experience">Experience</a></li>
         <li><a href="#skills">Capabilities</a></li>
         <li><a href="#contact">Contact</a></li>
@@ -1019,21 +1109,24 @@
                   <span class="project-role-tag">Project Manager &amp; Unity Programmer</span>
                   <h3>Altalis</h3>
                 </div>
-                <p class="summary">A puzzle Metroidvania built around systemic world exploration. I directed a
-                  six-person team through full-cycle production and programmed the core gameplay systems to ship our
-                  public Steam demo on schedule.</p>
+                <p class="summary">A puzzle Metroidvania built around systemic world exploration. I led our six-person
+                  team to a public Steam demo and programmed the core gameplay systems in C#—letting players slow time,
+                  copy-paste world blocks on a grid, and reset puzzles instantly without reloading scenes.</p>
                 <ul class="contributions">
                   <li>
-                    <strong>C# Object-Manipulation Systems</strong>
-                    Engineered core interactive puzzle entities and player manipulation mechanics in Unity.
+                    <strong>Selection Mode &amp; Object Manipulation</strong>
+                    Built a 0.3x time-dilation grid mode where players select, copy, cut, or fuse physical blocks into
+                    launchable projectiles with real-time collision and mana checks.
                   </li>
                   <li>
-                    <strong>Metroidvania Progression Framework</strong>
-                    Designed a modular C# architecture handling ability gating and interconnected world mapping.
+                    <strong>Two-Tier Save &amp; Instant Undo System</strong>
+                    Separated campfire checkpoints from local puzzle snapshots so players can roll back a room or
+                    recover from hazards in 1.5s without a scene reload.
                   </li>
                   <li>
-                    <strong>Cross-Discipline Production</strong>
-                    Planned milestones, ran sprint reviews, and coordinated integration across art, design, and code.
+                    <strong>Metroidvania World &amp; Team Production</strong>
+                    Programmed room-discovery mapping, ability-gated portals, and a radial skill wheel while managing
+                    sprints across art, design, and code.
                   </li>
                 </ul>
               </div>
@@ -1045,8 +1138,11 @@
                   <li>Project Management</li>
                   <li>Systems Design</li>
                 </ul>
-                <a class="btn primary" href="https://store.steampowered.com/app/4373270/Altalis/" target="_blank"
-                  rel="noopener">Play on Steam &rarr;</a>
+                <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                  <a class="btn" href="#architecture">Under the Hood &darr;</a>
+                  <a class="btn primary" href="https://store.steampowered.com/app/4373270/Altalis/" target="_blank"
+                    rel="noopener">Play on Steam &rarr;</a>
+                </div>
               </div>
             </div>
           </article>
@@ -1357,6 +1453,94 @@
       </div>
     </section>
 
+    <section id="architecture">
+      <div class="wrap">
+        <div class="sec-header">
+          <div>
+            <span class="sec-kicker">Engineering Spotlight · Altalis</span>
+            <h2>Under the <em class="editorial">Hood</em></h2>
+          </div>
+          <a class="btn" href="https://store.steampowered.com/app/4373270/Altalis/" target="_blank" rel="noopener">Try It in the Steam Demo &rarr;</a>
+        </div>
+
+        <p class="case-study-intro">In <strong>Altalis</strong>, the core puzzle loop lets players treat the game world like a canvas—freezing time to copy, cut, and launch physical blocks across rooms. Here is how I structured the C# systems so those mechanics stay responsive and bug-free across an interconnected Metroidvania map.</p>
+
+        <div class="arch-grid">
+          <article class="arch-card">
+            <div>
+              <span class="arch-kicker">01 · Core Gameplay Mechanic</span>
+              <h3>Grid Selection &amp; Copy-Paste Engine</h3>
+              <p>Toggling Selection Mode smoothly slows game time to <strong>0.3x</strong> and locks player movement so players can line up precision grid edits mid-jump or mid-puzzle.</p>
+              <ul class="arch-points">
+                <li><strong>Perspective-Correct Grid Snapping:</strong> Projects mouse or gamepad stick input onto the 2D gameplay plane and snaps to Unity grid cell centers.</li>
+                <li><strong>Ghost Previews &amp; Validation:</strong> Clones selected blocks as green/red ghost previews, checking wall/enemy overlaps and mana limits before pasting.</li>
+              </ul>
+            </div>
+            <ul class="code-pills">
+              <li>GameModeManager.cs</li>
+              <li>GridCursor.cs</li>
+              <li>GridSelection.cs</li>
+              <li>CopyPlacement.cs</li>
+            </ul>
+          </article>
+
+          <article class="arch-card">
+            <div>
+              <span class="arch-kicker">02 · Physics &amp; Modular Abilities</span>
+              <h3>Dynamic Block Fusion &amp; Radial Skills</h3>
+              <p>Instead of hardcoding abilities onto the player controller, skills are modular prefabs loaded into a radial wheel that calculates aim angles directly from the cursor.</p>
+              <ul class="arch-points">
+                <li><strong>Runtime Collider Merging:</strong> Selecting multiple blocks and firing <em>Launch</em> fuses them into one temporary rigidbody projectile—and splits them back apart on wall impact.</li>
+                <li><strong>Moving Platform Sync:</strong> If the player jumps onto a launched block mid-flight, velocity is synced so they can ride their own creations across gaps.</li>
+              </ul>
+            </div>
+            <ul class="code-pills">
+              <li>LaunchSelection.cs</li>
+              <li>ObjectMerger.cs</li>
+              <li>SkillWheelController.cs</li>
+              <li>SkillManager.cs</li>
+            </ul>
+          </article>
+
+          <article class="arch-card">
+            <div>
+              <span class="arch-kicker">03 · Save Architecture</span>
+              <h3>Two-Tier Checkpoints &amp; Instant Puzzle Undo</h3>
+              <p>Reloading an entire Unity scene every time a puzzle goes wrong kills pacing. I split persistence into light JSON files so rooms can reset in place.</p>
+              <ul class="arch-points">
+                <li><strong>Hazard vs. Combat Deaths:</strong> Losing all HP respawns you at the last Campfire checkpoint, while touching spikes or magma only resets the current room's puzzle snapshot.</li>
+                <li><strong>1.5s Hold-to-Undo:</strong> Stepping on a Mana Block snapshots every placed block in the room; holding Undo dissolves the room and rebuilds that snapshot without reloading the scene.</li>
+              </ul>
+            </div>
+            <ul class="code-pills">
+              <li>SaveSystem.cs</li>
+              <li>DeathManager.cs</li>
+              <li>ManaBlock.cs</li>
+              <li>UndoManager.cs</li>
+            </ul>
+          </article>
+
+          <article class="arch-card">
+            <div>
+              <span class="arch-kicker">04 · Metroidvania World State</span>
+              <h3>Room Discovery &amp; Cross-Scene Portals</h3>
+              <p>An interconnected map requires every lever pulled, gate opened, and block placed to be remembered as players travel back and forth between rooms.</p>
+              <ul class="arch-points">
+                <li><strong>Live Mini-Map Fog of War:</strong> Room boundary triggers update a persistent singleton that reveals map tiles (hidden, current, visited) and auto-centers the map camera.</li>
+                <li><strong>Deterministic Object IDs:</strong> Levers, gates, and skill chests generate unique IDs so their activated state persists cleanly across scene transitions.</li>
+              </ul>
+            </div>
+            <ul class="code-pills">
+              <li>MapManager.cs</li>
+              <li>RoomData.cs</li>
+              <li>NextSceneTrigger.cs</li>
+              <li>LeverController.cs</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section id="experience">
       <div class="wrap">
         <div class="sec-header">
@@ -1491,6 +1675,7 @@
             <span class="sec-kicker">Get in Touch</span>
             <h2>Let's Ship <em class="editorial">Something.</em></h2>
             <a class="mail" href="mailto:omar.ginza@gmail.com">omar.ginza@gmail.com</a>
+            <p class="contact-meta">Surabaya, Indonesia · (+62) 856-4834-3488</p>
             <p class="contact-meta">
               Surabaya, Indonesia · 
               <a href="tel:+6285648343488" style="color:var(--text);border-bottom:1px solid var(--line-light);">+62 856-4834-3488</a>
@@ -1502,6 +1687,8 @@
             <a class="btn" href="https://www.linkedin.com/in/omar-ginza-a677643a3/" target="_blank" rel="noopener">LinkedIn</a>
             <a class="btn" href="https://github.com/OmarGinzax" target="_blank" rel="noopener">GitHub</a>
             <a class="btn" href="https://ginzax.itch.io/" target="_blank" rel="noopener">itch.io</a>
+            <a class="btn" href="https://www.linkedin.com/in/omar-ginza-a677643a3/" target="_blank"
+              rel="noopener">LinkedIn</a>
           </div>
         </div>
       </div>
