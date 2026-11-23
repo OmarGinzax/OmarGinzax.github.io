@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Altalis — Systems &amp; Architecture Documentation | Omar Ginza</title>
+<meta name="description" content="Technical breakdown of Altalis by Omar Ginza: Object Manipulation Engine, Two-Tier Persistence &amp; Instant Undo, Radial Skill Framework, and Metroidvania World State.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0B110F;
+  --surface: #111A16;
+  --surface-alt: #0E1613;
+  --line: #21302A;
+  --line-light: #31473E;
+  --text: #EDF2EF;
+  --muted: #8FA39A;
+  --accent: #68D3A3;
+  --accent-warm: #84E2B8;
+  --display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --serif: "Newsreader", Georgia, serif;
+  --body: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font: 400 1.02rem/1.65 var(--body);
+  -webkit-font-smoothing: antialiased;
+  padding: 2rem 1.25rem 5rem;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.toolbar {
+  max-width: 980px;
+  margin: 0 auto 1.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.65rem 1.25rem;
+  border: 1px solid var(--line-light);
+  background: var(--surface);
+  color: var(--text);
+  font: 600 0.88rem/1 var(--body);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  border-color: var(--text);
+}
+
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #07120D;
+  font-weight: 700;
+}
+
+.btn.primary:hover {
+  background: var(--accent-warm);
+  border-color: var(--accent-warm);
+}
+
+.doc-sheet {
+  max-width: 980px;
+  margin: 0 auto;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 3.5rem 3.75rem;
+}
+
+.doc-header {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.doc-kicker {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 0.45rem;
+}
+
+h1 {
+  font-family: var(--display);
+  font-size: clamp(2.8rem, 6vw, 4.4rem);
+  font-weight: 900;
+  line-height: 0.92;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  margin-bottom: 1.15rem;
+}
+
+.doc-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.75rem;
+  font-size: 0.88rem;
+  color: var(--muted);
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--line);
+}
+
+.doc-meta strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.doc-lead {
+  font-size: 1.1rem;
+  color: #D0DDD7;
+  line-height: 1.65;
+  margin-bottom: 2.5rem;
+}
+
+.sec {
+  margin-bottom: 3.25rem;
+  padding-bottom: 2.75rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.sec:last-of-type {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.sec-num {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+h2 {
+  font-family: var(--display);
+  font-size: clamp(1.85rem, 3.5vw, 2.5rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.015em;
+  line-height: 0.98;
+  margin-bottom: 0.85rem;
+}
+
+.sec-intro {
+  color: #C4D2CC;
+  margin-bottom: 1.5rem;
+}
+
+/* Visual Pipeline / Flowchart Cards */
+.flow-box {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 1.35rem 1.5rem;
+  margin: 1.35rem 0 1.65rem;
+}
+
+.flow-title {
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 0.95rem;
+  display: block;
+}
+
+.flow-track {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.flow-step {
+  background: var(--surface);
+  border: 1px solid var(--line-light);
+  padding: 0.55rem 0.85rem;
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.flow-step code {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  color: var(--accent);
+  margin-bottom: 0.15rem;
+}
+
+.flow-arrow {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  padding: 0 0.15rem;
+}
+
+/* Script Breakdown List */
+.script-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.1rem;
+}
+
+.script-card {
+  background: var(--surface-alt);
+  border: 1px solid var(--line);
+  padding: 1.25rem 1.35rem;
+}
+
+.script-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.script-title {
+  font-weight: 700;
+  color: var(--text);
+  font-size: 0.98rem;
+}
+
+.script-file {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+  background: rgba(104, 211, 163, 0.08);
+  border: 1px solid rgba(104, 211, 163, 0.25);
+  padding: 0.12rem 0.48rem;
+}
+
+.script-desc {
+  font-size: 0.9rem;
+  color: #BAC8C1;
+  line-height: 1.55;
+}
+
+/* Comparison Table for Two-Tier Save System */
+.table-wrap {
+  overflow-x: auto;
+  margin: 1.25rem 0 1.5rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  background: var(--bg);
+  border: 1px solid var(--line);
+}
+
+th, td {
+  text-align: left;
+  padding: 0.85rem 1.1rem;
+  border-bottom: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+}
+
+th {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  background: var(--surface-alt);
+}
+
+td strong {
+  color: var(--text);
+}
+
+td code {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--accent);
+}
+
+@media (max-width: 740px) {
+  .doc-sheet {
+    padding: 2rem 1.4rem;
+  }
+  .script-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  :root {
+    --bg: #FFFFFF;
+    --surface: #FFFFFF;
+    --surface-alt: #F7F9F8;
+    --line: #D2DBD6;
+    --line-light: #B0BEB7;
+    --text: #101613;
+    --muted: #4A5952;
+    --accent: #146B48;
+  }
+  body {
+    padding: 0;
+    background: #FFFFFF;
+    color: #101613;
+    font-size: 9.5pt;
+  }
+  .toolbar {
+    display: none;
+  }
+  .doc-sheet {
+    border: none;
+    padding: 0;
+    max-width: 100%;
+  }
+  .doc-lead, .sec-intro, .script-desc {
+    color: #212B26;
+  }
+  .sec {
+    page-break-inside: avoid;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <a class="btn" href="index.html">&larr; Back to Portfolio</a>
+  <div class="toolbar-actions">
+    <a class="btn" href="https://store.steampowered.com/app/4373270/Altalis/" target="_blank" rel="noopener">Play Steam Demo &nearr;</a>
+    <button type="button" class="btn primary" onclick="window.print()">Print / Save as PDF</button>
+  </div>
+</div>
+
+<main class="doc-sheet">
+  <header class="doc-header">
+    <span class="doc-kicker">Technical Architecture &amp; Systems Documentation</span>
+    <h1>Altalis — Systems Deep Dive</h1>
+    <div class="doc-meta">
+      <span><strong>Author:</strong> Omar Ginza (Project Manager &amp; Unity Programmer)</span>
+      <span><strong>Studio:</strong> Fiz Studio (6 Members)</span>
+      <span><strong>Engine:</strong> Unity / C#</span>
+      <span><strong>Release:</strong> Public Steam Demo</span>
+    </div>
+  </header>
+
+  <p class="doc-lead">
+    <strong>Altalis</strong> is a 2D puzzle Metroidvania built around systemic world manipulation. Instead of treating rooms as static platforming obstacle courses, players can slow down time, select physical blocks on a grid, and copy, cut, fuse, or launch them across gaps. Below is a concise breakdown of the four core C# architectures I engineered to make those mechanics feel responsive, deterministic, and seamless across an interconnected map.
+  </p>
+
+  <!-- SECTION 1 -->
+  <section class="sec">
+    <span class="sec-num">System 01 · Core Gameplay Loop</span>
+    <h2>Object Manipulation Engine (Selection Mode)</h2>
+    <p class="sec-intro">
+      The signature mechanic of Altalis lets players toggle into <strong>Selection Mode</strong> at any moment—even mid-jump. To make grid editing feel fair during live platforming, entering Selection Mode smoothly dilates game time to <code>0.3x</code> and locks player locomotion while activating a perspective-correct grid cursor.
+    </p>
+
+    <div class="flow-box" aria-label="Selection Mode execution pipeline">
+      <span class="flow-title">Execution Pipeline · Selection Mode</span>
+      <div class="flow-track">
+        <div class="flow-step"><code>GameModeManager.cs</code>Lerp Time.timeScale to 0.3x</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-step"><code>GridCursor.cs</code>Raycast to Z-plane &amp; snap cell</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-step"><code>GridSelection.cs</code>Box/point select &amp; cap check</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-step"><code>CopyPlacement.cs / CutPlacement.cs</code>Ghost overlap check &amp; spend Mana</div>
+      </div>
+    </div>
+
+    <div class="script-grid">
+      <div class="script-card">
+        <div class="script-head">
+          <span class="script-title">Mode State &amp; Time Dilation</span>
+          <span class="script-file">GameModeManager.cs</span>
+        </div>
+        <p class="script-desc">Switches between <code>Movement</code> and <code>Selection</code> modes. Interpolates <code>Time.timeScale</code> down to <code>0.3f</code> using unscaled delta time so animations and physics slow down smoothly without freezing UI responsiveness.</p>
+      </div>
+
+      <div class="script-card">
+        <div class="script-head">
+          <span class="script-title">Hybrid Mouse &amp; Gamepad Grid Cursor</span>
+          <span class="script-file">GridCursor.cs</span>
+        </div>
+        <p class="script-desc">Projects screen input onto the gameplay Z-plane via raycast math and snaps to Unity grid cell centers. Automatically switches between raw mouse position and deadzone-filtered gamepad stick movement.</p>
+      </div>
+
+      <div class="script-card">
+        <div class="script-head">
+          <span class="script-title">Bounding-Box Hit Detection</span>
+          <span class="script-file">GridSelection.cs</span>
+        </div>
+        <p class="script-desc">Supports both single-tap (<code>OverlapPoint</code>) and drag-box (<code>OverlapAreaAll</code>) selection for objects tagged <code>"Selectable"</code>. Enforces the player's max selection limit and triggers camera-shake feedback if exceeded.</p>
+      </div>
+
+      <div class="script-card">
+        <div class="script-head">
+          <span class="script-title">Ghost Preview &amp; Copy/Cut Paste</span>
+          <span class="script-file">CopyPlacement.cs</span>
+        </div>
+        <p class="script-desc">Spawns translucent green/red ghost clones offset from a primary snap pivot. Validates wall/enemy collisions (<code>OverlapBoxAll</code>) and mana availability before instantiating physical rigidbodies or shrinking cut originals.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2 -->
+  <section class="sec">
+    <span class="sec-num">System 02 · Modular Skills &amp; Physics Fusion</span>
+    <h2>Dynamic Block Merging &amp; Radial Skill Wheel</h2>
+    <p class="sec-intro">
+      Rather than coupling ability logic to the player controller, every skill inherits from an abstract <code>Skill</code> base contract and is dynamically loaded into a radial wheel centered on the player's grid cursor.
+    </p>
+
+    <div class="flow-box" aria-label="Skill activation flow">
+      <span class="flow-title">Execution Pipeline · Radial Wheel &amp; Block Launch</span>
+      <div class="flow-track">
+        <div class="flow-step"><code>SkillChest.cs</code>Unlocks skill to skills.json</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-step"><code>SkillWheelController.cs</code>atan2 angle selects slice</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-step"><code>SkillManager.cs</code>Calls Activate() on slot prefab</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-step"><code>LaunchSelection.cs</code>Fuses blocks &amp; fires projectile</div>
+      </div>
+    </div>
+
+    <div class="script-grid">
+      <div class="script-card">
+        <div class="script-head">
+          <span class="script-title">Runtime Physics Fusion &amp; Launch</span>
+          <span class="script-file">LaunchSelection.cs</span>
+        </div>
+        <p class="script-desc">Merges selected blocks into a single <code>CombinedLaunchObject</code> with mass scaled by block count. Upon hitting a wall, <code>LaunchCollisionHandler</code> unmerges the composite collider back into individual falling blocks.</p>
+      </div>
+
+      <div class="script-card">
+        <div class="script-head">
+          <span class="script-title">Rideable Projectile Sync</span>
+          <span class="script-file">PlatformPlayerSync</span>
+        </div>
+        <p class="script-desc">Allows players to jump onto their own launched blocks mid-air. Temporarily parents the player and synchronizes horizontal velocity so players can ride moving projectiles across wide chasms.</p>
+      </div>
+
+      <div class="script-card">
+        <div class="script-head">
+          <span class="script-title">Cursor-Centered Radial Wheel</span>
+          <span class="script-file">SkillWheelController.cs</span>
+        </div>
+        <p class="script-desc">Opens directly at the active grid cell center and computes <code>atan2(dx, dy)</code> from wheel origin to cursor/stick to highlight and trigger equipped abilities on release.</p>
+      </div>
+
+      <div class="script-card">
+        <div class="script-head">
+          <span class="script-title">Modular Skill Loadout</span>
+          <span class="script-file">SkillManager.cs</span>
+        </div>
+        <p class="script-desc">Instantiates equipped skill prefabs (<em>Launch</em>, <em>Hammer</em>, <em>Shield</em>) as child components and routes slot activations cleanly without monolithic switch statements.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3 -->
+  <section class="sec">
+    <span class="sec-num">System 03 · State Persistence &amp; Instant Rollback</span>
+    <h2>Two-Tier Checkpoints &amp; Scene-Free Puzzle Undo</h2>
+    <p class="sec-intro">
+      In a puzzle-heavy game, forcing a full Unity scene reload every time a player misplaces a block or touches spikes ruins pacing. I designed a distributed JSON save architecture that separates <strong>combat death</strong> from <strong>local puzzle resets</strong>.
+    </p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Trigger / Event</th>
+            <th>Recovery Tier</th>
+            <th>Snapshot Source</th>
+            <th>What Happens in Engine</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>HP Reaches Zero</strong> (Combat)</td>
+            <td>Global Respawn</td>
+            <td><code>save.json</code> (Campfire Checkpoint)</td>
+            <td>Reloads checkpoint scene, restores full HP &amp; Mana, and places player at the last campfire.</td>
+          </tr>
+          <tr>
+            <td><strong>Spikes / Magma</strong> (Hazard)</td>
+            <td>Local Room Reset</td>
+            <td><code>save_manaBlock_{id}.json</code></td>
+            <td><strong>No scene reload.</strong> Reconstructs placed blocks and player position at the room's Mana Block.</td>
+          </tr>
+          <tr>
+            <td><strong>Hold Undo (1.5s)</strong></td>
+            <td>Instant Puzzle Rollback</td>
+            <td><code>save_manaBlock_{id}.json</code></td>
+            <td>Plays a dissolve shader over placed blocks, refills Mana, and restores the room snapshot in place.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="script-grid">
+      <div class="script-card">
+        <div class="script-head">
+          <span class="script-title">Dynamic Prefab Reconstruction</span>
+          <span class="script-file">SaveSystem.cs</span>
+        </div>
+        <p class="script-desc">Tracks every runtime-copied or moved object via <code>PrefabID.cs</code>. On rollback, destroys modified instances and re-instantiates exact prefabs with saved transforms from the prefab catalog.</p>
+      </div>
+
+      <div class="script-card">
+        <div class="script-head">
+          <span class="script-title">Localized Puzzle Snapshots</span>
+          <span class="script-file">ManaBlock.cs &amp; UndoManager.cs</span>
+        </div>
+        <p class="script-desc">Stepping on a Mana Block writes a lightweight room snapshot. Holding the Undo key fills a 1.5s radial progress ring (locked out during boss fights) to trigger a shader-dissolve reset.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4 -->
+  <section class="sec">
+    <span class="sec-num">System 04 · Metroidvania World Architecture</span>
+    <h2>Room Discovery, Fog-of-War Map &amp; Gating</h2>
+    <p class="sec-intro">
+      Altalis connects dozens of rooms through bidirectional portals, levers, and ability-gated doors. Every room transition and environmental switch commits its state to dedicated JSON files so the world remembers player actions permanently.
+    </p>
+
+    <div class="script-grid">
+      <div class="script-card">
+        <div class="script-head">
+          <span class="script-title">Persistent Map &amp; Fog of War</span>
+          <span class="script-file">MapManager.cs &amp; MapRoomUI.cs</span>
+        </div>
+        <p class="script-desc"><code>DontDestroyOnLoad</code> singleton tracking discovered rooms in <code>map_only.json</code>. Updates map tile alpha dynamically (<code>0</code> = hidden, <code>0.5</code> = active room, <code>1.0</code> = visited) and auto-centers the pan/zoom map camera.</p>
+      </div>
+
+      <div class="script-card">
+        <div class="script-head">
+          <span class="script-title">Portal Transitions &amp; Object Carryover</span>
+          <span class="script-file">NextSceneTrigger.cs</span>
+        </div>
+        <p class="script-desc">Pairs entrance and exit portals via <code>portalID</code>. Saves placed room objects prior to scene unload, animates player entry/exit movement, and coordinates spawn handoff with <code>GameModeManager</code>.</p>
+      </div>
+
+      <div class="script-card">
+        <div class="script-head">
+          <span class="script-title">Deterministic Switch &amp; Gate IDs</span>
+          <span class="script-file">LeverController.cs &amp; GateController.cs</span>
+        </div>
+        <p class="script-desc">Levers, gates, and chests generate deterministic IDs (via <code>PrefabID</code> or world coordinates) stored in <code>activatable_states_{scene}.json</code> so opened shortcuts stay open forever.</p>
+      </div>
+
+      <div class="script-card">
+        <div class="script-head">
+          <span class="script-title">Permanent Upgrade Transactions</span>
+          <span class="script-file">ResourceManager.cs</span>
+        </div>
+        <p class="script-desc">Provides transaction-safe mana spending (<code>TrySpendMana()</code>) and persists permanent capacity upgrades (Max Mana and Grid Selection Limit) to <code>resource_only.json</code>.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>
