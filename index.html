@@ -464,7 +464,7 @@
       overflow: hidden;
     }
 
-    /* Left Column of Card: 16:9 Artwork + Quick Specs Bar */
+    /* Left Column of Card: 16:9 Cover/Video + Screenshot Gallery Strip */
     .slide-visual {
       display: flex;
       flex-direction: column;
@@ -479,6 +479,7 @@
       width: 100%;
       overflow: hidden;
       background: #070C0A;
+      cursor: pointer;
     }
 
     .frame img.cover-img {
@@ -488,11 +489,104 @@
       height: 100%;
       object-fit: cover;
       display: block;
-      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+      z-index: 1;
     }
 
-    .slide:hover .frame img.cover-img {
-      transform: scale(1.025);
+    .frame video.hover-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.28s ease;
+      z-index: 2;
+      background: #070C0A;
+    }
+
+    .frame.is-playing video.hover-video {
+      opacity: 1;
+    }
+
+    .video-hint {
+      position: absolute;
+      right: 0.75rem;
+      bottom: 0.75rem;
+      z-index: 3;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.26rem 0.6rem;
+      background: rgba(7, 12, 10, 0.84);
+      border: 1px solid var(--line-light);
+      color: var(--accent);
+      pointer-events: none;
+      backdrop-filter: blur(4px);
+      transition: opacity 0.25s ease, background 0.25s ease;
+    }
+
+    .frame.is-playing .video-hint {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #07120D;
+    }
+
+    /* Screenshot Thumbnail Strip Below Cover */
+    .thumb-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.45rem;
+      padding: 0.55rem 0.65rem;
+      border-top: 1px solid var(--line);
+      background: #09100D;
+    }
+
+    .thumb-btn {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      border: 1px solid var(--line);
+      background: #070C0A;
+      padding: 0;
+      cursor: pointer;
+      overflow: hidden;
+      opacity: 0.62;
+      transition: opacity 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .thumb-btn:hover {
+      opacity: 0.92;
+      border-color: var(--line-light);
+    }
+
+    .thumb-btn[aria-current="true"] {
+      opacity: 1;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .thumb-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .thumb-tag {
+      position: absolute;
+      left: 0.25rem;
+      bottom: 0.2rem;
+      font-size: 0.6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.1rem 0.32rem;
+      background: rgba(7, 12, 10, 0.85);
+      color: var(--text);
+      pointer-events: none;
     }
 
     .visual-bar {
@@ -504,7 +598,7 @@
     }
 
     .visual-stat {
-      padding: 0.85rem 1.1rem;
+      padding: 0.65rem 1rem;
       border-right: 1px solid var(--line);
       display: flex;
       flex-direction: column;
@@ -994,8 +1088,25 @@
           <!-- 1: ALTALIS -->
           <article class="slide" data-slide="0">
             <div class="slide-visual">
-              <div class="frame">
-                <img class="cover-img" src="Altalis.jpg" alt="Altalis cover artwork">
+              <div class="frame" data-has-video="true">
+                <img class="cover-img" src="Altalis/Altalis%20Cover.jpg" data-cover="Altalis/Altalis%20Cover.jpg" alt="Altalis cover artwork">
+                <video class="hover-video" src="Altalis/footage_altalis.mp4" muted loop playsinline preload="metadata"></video>
+                <span class="video-hint">Hover Cover for Gameplay</span>
+              </div>
+              <div class="thumb-strip" aria-label="Altalis media gallery">
+                <button type="button" class="thumb-btn" data-src="Altalis/Altalis%20Cover.jpg" data-is-cover="true" aria-current="true" aria-label="Altalis Cover">
+                  <img src="Altalis/Altalis%20Cover.jpg" alt="Altalis Cover">
+                  <span class="thumb-tag">Cover · MP4</span>
+                </button>
+                <button type="button" class="thumb-btn" data-src="Altalis/Altalis1.png" aria-label="Altalis Screenshot 1">
+                  <img src="Altalis/Altalis1.png" alt="Altalis Screenshot 1" loading="lazy">
+                </button>
+                <button type="button" class="thumb-btn" data-src="Altalis/Altalis2.png" aria-label="Altalis Screenshot 2">
+                  <img src="Altalis/Altalis2.png" alt="Altalis Screenshot 2" loading="lazy">
+                </button>
+                <button type="button" class="thumb-btn" data-src="Altalis/Altalis3.png" aria-label="Altalis Screenshot 3">
+                  <img src="Altalis/Altalis3.png" alt="Altalis Screenshot 3" loading="lazy">
+                </button>
               </div>
               <div class="visual-bar">
                 <div class="visual-stat">
@@ -1061,7 +1172,7 @@
           <article class="slide" data-slide="1">
             <div class="slide-visual">
               <div class="frame">
-                <img class="cover-img" src="Fiz Catcher.png" alt="Fiz Catcher cover artwork">
+                <img class="cover-img" src="Fiz%20Catcher/Fiz%20Catcher%20Cover.png" data-cover="Fiz%20Catcher/Fiz%20Catcher%20Cover.png" alt="Fiz Catcher cover artwork">
               </div>
               <div class="visual-bar">
                 <div class="visual-stat">
@@ -1123,8 +1234,25 @@
           <!-- 3: DUST MARCH -->
           <article class="slide" data-slide="2">
             <div class="slide-visual">
-              <div class="frame">
-                <img class="cover-img" src="Dust March.png" alt="Dust March cover artwork">
+              <div class="frame" data-has-video="true">
+                <img class="cover-img" src="Dust%20March/Dust%20March%20Cover.png" data-cover="Dust%20March/Dust%20March%20Cover.png" alt="Dust March cover artwork">
+                <video class="hover-video" src="Dust%20March/Dust%20March.mp4" muted loop playsinline preload="metadata"></video>
+                <span class="video-hint">Hover Cover for Gameplay</span>
+              </div>
+              <div class="thumb-strip" aria-label="Dust March media gallery">
+                <button type="button" class="thumb-btn" data-src="Dust%20March/Dust%20March%20Cover.png" data-is-cover="true" aria-current="true" aria-label="Dust March Cover">
+                  <img src="Dust%20March/Dust%20March%20Cover.png" alt="Dust March Cover">
+                  <span class="thumb-tag">Cover · MP4</span>
+                </button>
+                <button type="button" class="thumb-btn" data-src="Dust%20March/Dust%20March.jpg" aria-label="Dust March Screenshot 1">
+                  <img src="Dust%20March/Dust%20March.jpg" alt="Dust March Screenshot 1" loading="lazy">
+                </button>
+                <button type="button" class="thumb-btn" data-src="Dust%20March/Dust%20March%202.png" aria-label="Dust March Screenshot 2">
+                  <img src="Dust%20March/Dust%20March%202.png" alt="Dust March Screenshot 2" loading="lazy">
+                </button>
+                <button type="button" class="thumb-btn" data-src="Dust%20March/Dust%20March%203.png" aria-label="Dust March Screenshot 3">
+                  <img src="Dust%20March/Dust%20March%203.png" alt="Dust March Screenshot 3" loading="lazy">
+                </button>
               </div>
               <div class="visual-bar">
                 <div class="visual-stat">
@@ -1190,8 +1318,25 @@
           <!-- 4: THE RULE ARE YOURS -->
           <article class="slide" data-slide="3">
             <div class="slide-visual">
-              <div class="frame">
-                <img class="cover-img" src="The Rule Are Yours.png" alt="The Rule Are Yours cover artwork">
+              <div class="frame" data-has-video="true">
+                <img class="cover-img" src="The%20Rule%20Are%20Yours/The%20Rule%20Are%20Yours%20Cover.png" data-cover="The%20Rule%20Are%20Yours/The%20Rule%20Are%20Yours%20Cover.png" alt="The Rule Are Yours cover artwork">
+                <video class="hover-video" src="The%20Rule%20Are%20Yours/TheRuleAreYours.mp4" muted loop playsinline preload="metadata"></video>
+                <span class="video-hint">Hover Cover for Gameplay</span>
+              </div>
+              <div class="thumb-strip" aria-label="The Rule Are Yours media gallery">
+                <button type="button" class="thumb-btn" data-src="The%20Rule%20Are%20Yours/The%20Rule%20Are%20Yours%20Cover.png" data-is-cover="true" aria-current="true" aria-label="The Rule Are Yours Cover">
+                  <img src="The%20Rule%20Are%20Yours/The%20Rule%20Are%20Yours%20Cover.png" alt="The Rule Are Yours Cover">
+                  <span class="thumb-tag">Cover · MP4</span>
+                </button>
+                <button type="button" class="thumb-btn" data-src="The%20Rule%20Are%20Yours/TheRuleAreYours1.png" aria-label="The Rule Are Yours Screenshot 1">
+                  <img src="The%20Rule%20Are%20Yours/TheRuleAreYours1.png" alt="The Rule Are Yours Screenshot 1" loading="lazy">
+                </button>
+                <button type="button" class="thumb-btn" data-src="The%20Rule%20Are%20Yours/TheRuleAreYours2.png" aria-label="The Rule Are Yours Screenshot 2">
+                  <img src="The%20Rule%20Are%20Yours/TheRuleAreYours2.png" alt="The Rule Are Yours Screenshot 2" loading="lazy">
+                </button>
+                <button type="button" class="thumb-btn" data-src="The%20Rule%20Are%20Yours/TheRuleAreYours3.png" aria-label="The Rule Are Yours Screenshot 3">
+                  <img src="The%20Rule%20Are%20Yours/TheRuleAreYours3.png" alt="The Rule Are Yours Screenshot 3" loading="lazy">
+                </button>
               </div>
               <div class="visual-bar">
                 <div class="visual-stat">
@@ -1253,8 +1398,25 @@
           <!-- 5: CRABFISH TORPEDO -->
           <article class="slide" data-slide="4">
             <div class="slide-visual">
-              <div class="frame">
-                <img class="cover-img" src="CrabFish Torpedo.png" alt="CrabFish Torpedo cover artwork">
+              <div class="frame" data-has-video="true">
+                <img class="cover-img" src="CrabFish%20Torpedo/CrabFish%20Torpedo.png" data-cover="CrabFish%20Torpedo/CrabFish%20Torpedo.png" alt="CrabFish Torpedo cover artwork">
+                <video class="hover-video" src="CrabFish%20Torpedo/footage_crabfish.mp4" muted loop playsinline preload="metadata"></video>
+                <span class="video-hint">Hover Cover for Gameplay</span>
+              </div>
+              <div class="thumb-strip" aria-label="CrabFish Torpedo media gallery">
+                <button type="button" class="thumb-btn" data-src="CrabFish%20Torpedo/CrabFish%20Torpedo.png" data-is-cover="true" aria-current="true" aria-label="CrabFish Torpedo Cover">
+                  <img src="CrabFish%20Torpedo/CrabFish%20Torpedo.png" alt="CrabFish Torpedo Cover">
+                  <span class="thumb-tag">Cover · MP4</span>
+                </button>
+                <button type="button" class="thumb-btn" data-src="CrabFish%20Torpedo/Crabfish1.png" aria-label="CrabFish Torpedo Screenshot 1">
+                  <img src="CrabFish%20Torpedo/Crabfish1.png" alt="CrabFish Torpedo Screenshot 1" loading="lazy">
+                </button>
+                <button type="button" class="thumb-btn" data-src="CrabFish%20Torpedo/Crabfish2.png" aria-label="CrabFish Torpedo Screenshot 2">
+                  <img src="CrabFish%20Torpedo/Crabfish2.png" alt="CrabFish Torpedo Screenshot 2" loading="lazy">
+                </button>
+                <button type="button" class="thumb-btn" data-src="CrabFish%20Torpedo/Crabfish3.png" aria-label="CrabFish Torpedo Screenshot 3">
+                  <img src="CrabFish%20Torpedo/Crabfish3.png" alt="CrabFish Torpedo Screenshot 3" loading="lazy">
+                </button>
               </div>
               <div class="visual-bar">
                 <div class="visual-stat">
@@ -1309,8 +1471,25 @@
           <!-- 6: HEART STRING -->
           <article class="slide" data-slide="5">
             <div class="slide-visual">
-              <div class="frame">
-                <img class="cover-img" src="HeartString.png" alt="Heart String cover artwork">
+              <div class="frame" data-has-video="true">
+                <img class="cover-img" src="HeartString/HeartString%20Cover.png" data-cover="HeartString/HeartString%20Cover.png" alt="Heart String cover artwork">
+                <video class="hover-video" src="HeartString/HeartString.mp4" muted loop playsinline preload="metadata"></video>
+                <span class="video-hint">Hover Cover for Gameplay</span>
+              </div>
+              <div class="thumb-strip" aria-label="Heart String media gallery">
+                <button type="button" class="thumb-btn" data-src="HeartString/HeartString%20Cover.png" data-is-cover="true" aria-current="true" aria-label="Heart String Cover">
+                  <img src="HeartString/HeartString%20Cover.png" alt="Heart String Cover">
+                  <span class="thumb-tag">Cover · MP4</span>
+                </button>
+                <button type="button" class="thumb-btn" data-src="HeartString/HeartStrings1.png" aria-label="Heart String Screenshot 1">
+                  <img src="HeartString/HeartStrings1.png" alt="Heart String Screenshot 1" loading="lazy">
+                </button>
+                <button type="button" class="thumb-btn" data-src="HeartString/HeartStrings2.png" aria-label="Heart String Screenshot 2">
+                  <img src="HeartString/HeartStrings2.png" alt="Heart String Screenshot 2" loading="lazy">
+                </button>
+                <button type="button" class="thumb-btn" data-src="HeartString/HeartStrings3.png" aria-label="Heart String Screenshot 3">
+                  <img src="HeartString/HeartStrings3.png" alt="Heart String Screenshot 3" loading="lazy">
+                </button>
               </div>
               <div class="visual-bar">
                 <div class="visual-stat">
@@ -1502,7 +1681,6 @@
             <span class="sec-kicker">Get in Touch</span>
             <h2>Let's Ship <em class="editorial">Something.</em></h2>
             <a class="mail" href="mailto:omar.ginza@gmail.com">omar.ginza@gmail.com</a>
-            <p class="contact-meta">Surabaya, Indonesia · (+62) 856-4834-3488</p>
             <p class="contact-meta">
               Surabaya, Indonesia · 
               <a href="tel:+6285648343488" style="color:var(--text);border-bottom:1px solid var(--line-light);">+62 856-4834-3488</a>
@@ -1514,8 +1692,6 @@
             <a class="btn" href="https://www.linkedin.com/in/omar-ginza-a677643a3/" target="_blank" rel="noopener">LinkedIn</a>
             <a class="btn" href="https://github.com/OmarGinzax" target="_blank" rel="noopener">GitHub</a>
             <a class="btn" href="https://ginzax.itch.io/" target="_blank" rel="noopener">itch.io</a>
-            <a class="btn" href="https://www.linkedin.com/in/omar-ginza-a677643a3/" target="_blank"
-              rel="noopener">LinkedIn</a>
           </div>
         </div>
       </div>
@@ -1596,6 +1772,68 @@
     slider.addEventListener("scroll", updateUI, { passive: true });
     window.addEventListener("resize", updateUI);
     updateUI();
+
+    // Cover Hover Video Loop + Screenshot Gallery Switcher
+    slides.forEach(function (slide) {
+      var frame = slide.querySelector(".frame");
+      var coverImg = frame ? frame.querySelector(".cover-img") : null;
+      var video = frame ? frame.querySelector(".hover-video") : null;
+      var hint = frame ? frame.querySelector(".video-hint") : null;
+      var thumbs = Array.prototype.slice.call(slide.querySelectorAll(".thumb-btn"));
+      var isCoverActive = true;
+
+      function startVideo() {
+        if (!video || !isCoverActive) return;
+        frame.classList.add("is-playing");
+        if (hint) hint.textContent = "Playing Gameplay";
+        var p = video.play();
+        if (p && typeof p.catch === "function") {
+          p.catch(function () {});
+        }
+      }
+
+      function stopVideo() {
+        if (!video) return;
+        frame.classList.remove("is-playing");
+        video.pause();
+        if (hint) {
+          hint.textContent = isCoverActive ? "Hover Cover for Gameplay" : "Click Cover for Gameplay";
+        }
+      }
+
+      if (frame && video) {
+        frame.addEventListener("mouseenter", startVideo);
+        frame.addEventListener("mouseleave", stopVideo);
+        frame.addEventListener("focusin", startVideo);
+        frame.addEventListener("focusout", stopVideo);
+      }
+
+      thumbs.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var newSrc = btn.getAttribute("data-src");
+          isCoverActive = btn.getAttribute("data-is-cover") === "true";
+
+          stopVideo();
+          if (video) {
+            video.currentTime = 0;
+          }
+          if (coverImg && newSrc) {
+            coverImg.src = newSrc;
+          }
+          if (hint) {
+            hint.textContent = isCoverActive ? "Hover Cover for Gameplay" : "Click Cover for Gameplay";
+          }
+
+          thumbs.forEach(function (t) {
+            if (t === btn) {
+              t.setAttribute("aria-current", "true");
+            } else {
+              t.removeAttribute("aria-current");
+            }
+          });
+        });
+      });
+    });
   </script>
 </body>
 
